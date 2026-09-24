@@ -51,7 +51,8 @@ def _rows_to_jobs(df, source_hint: str) -> list[dict]:
         site = str(r.get("site") or source_hint)
         url = r.get("job_url_direct") if isinstance(r.get("job_url_direct"), str) and site == "google" else r.get("job_url")
         rem = r.get("is_remote")
-        rem = rem if isinstance(rem, bool) else None
+        # jobspy reports False when a board simply doesn't say; only trust True.
+        rem = True if rem is True else None
         posted = r.get("date_posted")
         if isinstance(posted, float) and math.isnan(posted):
             posted = None
