@@ -1,1 +1,29 @@
-{}
+{
+ "ashby": [
+  "careerswift.ai",
+  "claylabs",
+  "conversion",
+  "decagon",
+  "limble",
+  "synthesia",
+  "Wisdom-AI"
+ ],
+ "greenhouse": [
+  "current",
+  "instawork",
+  "webflow"
+ ],
+ "lever": [
+  "getwingapp",
+  "incorta",
+  "jobgether"
+ ],
+ "workable": [
+  "huzzle",
+  "pavago",
+  "povio"
+ ],
+ "recruitee": [
+  "aikidosecurity"
+ ]
+}
