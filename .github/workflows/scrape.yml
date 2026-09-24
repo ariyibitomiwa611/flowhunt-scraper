@@ -1,0 +1,42 @@
+name: scrape
+on:
+  schedule:
+    - cron: "17 */4 * * *"   # every 4 hours: big boards + remote boards + known Webflow employers
+    - cron: "43 2 * * *"     # daily: full sweep of every company board
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "hot or full"
+        default: "full"
+permissions:
+  contents: write
+concurrency:
+  group: scrape
+  cancel-in-progress: false
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Pick mode
+        id: mode
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then echo "mode=${{ inputs.mode }}" >> $GITHUB_OUTPUT;
+          elif [ "${{ github.event.schedule }}" = "43 2 * * *" ]; then echo "mode=full" >> $GITHUB_OUTPUT;
+          else echo "mode=hot" >> $GITHUB_OUTPUT; fi
+      - name: Scrape
+        run: python -m scraper.run --mode ${{ steps.mode.outputs.mode }}
+      - name: Commit results
+        run: |
+          git config user.name "flowhunt-bot"
+          git config user.email "flowhunt-bot@users.noreply.github.com"
+          git add data
+          git commit -m "jobs: $(date -u +%FT%TZ) ($(python -c 'import json;m=json.load(open("data/meta.json"));print(m["total"],"live,",m["new_this_run"],"new")'))" || exit 0
+          git pull --rebase -X ours || true
+          git push
