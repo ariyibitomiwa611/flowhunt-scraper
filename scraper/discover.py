@@ -28,6 +28,7 @@ PATTERNS = {
     "recruitee": [("recruitee.com", "domain")],
 }
 SKIP = {"", "embed", "api", "j", "jobs", "careers", "static", "assets", "robots.txt", "favicon.ico", "www", "app", "blog", "help", "support"}
+URL_RE = re.compile(r'"url":\s*"([^"]+)"')
 SLUG_OK = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,80}$")
 
 
@@ -83,7 +84,8 @@ async def query(c, api, pattern, match, max_pages):
     for p in range(pages):
         r = await _get(c, api, {**params, "page": p}, timeout=180, tries=4)
         if r:
-            urls += [json.loads(l)["url"] for l in r.text.splitlines() if l.strip().startswith("{")]
+            # Pages sometimes arrive truncated: pull URLs out line by line and skip broken ones.
+            urls += URL_RE.findall(r.text)
     return urls
 
 
@@ -123,7 +125,11 @@ async def main(max_pages: int = 40):
         for api in await crawl_ids(c):
             for ats, pats in PATTERNS.items():
                 for pat, match in pats:
-                    urls = await query(c, api, pat, match, max_pages)
+                    try:
+                        urls = await query(c, api, pat, match, max_pages)
+                    except Exception as e:  # never lose the whole run to one bad response
+                        log.warning("query %s failed: %s", pat, e)
+                        urls = None
                     if urls is None:
                         continue
                     cc_ok = True
@@ -131,6 +137,9 @@ async def main(max_pages: int = 40):
                         s = slug_of(ats, url)
                         if s:
                             found[ats].add(s)
+                # Save progress after each ATS so a later failure keeps what we found.
+                path.write_text(json.dumps({k: sorted(v, key=str.lower) for k, v in found.items()}, indent=1))
+                log.info("  %s: %d boards so far", ats, len(found[ats]))
             if cc_ok and sum(len(v) for v in found.values()) > 2000:
                 break  # one good crawl is plenty
 
