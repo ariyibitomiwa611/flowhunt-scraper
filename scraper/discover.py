@@ -46,52 +46,101 @@ def slug_of(ats: str, url: str) -> str | None:
     return s if s.lower() not in SKIP and SLUG_OK.match(s) else None
 
 
-async def crawl_ids(c: httpx.AsyncClient, n: int = 2) -> list[str]:
-    r = await c.get("https://index.commoncrawl.org/collinfo.json")
-    return [x["cdx-api"] for x in r.json()[:n]]
+async def _get(c, url, params=None, timeout=120, tries=6):
+    """Common Crawl's index is often overloaded (503/504). Back off and retry."""
+    wait = 15
+    for attempt in range(tries):
+        try:
+            r = await c.get(url, params=params, timeout=timeout)
+            if r.status_code == 200:
+                await asyncio.sleep(1.5)  # be polite: roughly one request per second or two
+                return r
+            log.info("  %s -> %s, retry %d in %ds", url.split("/")[-1], r.status_code, attempt + 1, wait)
+        except Exception as e:
+            log.info("  %s -> %s, retry %d in %ds", url.split("/")[-1], type(e).__name__, attempt + 1, wait)
+        await asyncio.sleep(wait)
+        wait = min(wait * 2, 120)
+    return None
+
+
+async def crawl_ids(c: httpx.AsyncClient, n: int = 3) -> list[str]:
+    r = await _get(c, "https://index.commoncrawl.org/collinfo.json")
+    return [x["cdx-api"] for x in r.json()[:n]] if r else []
 
 
 async def query(c, api, pattern, match, max_pages):
-    params = {"url": pattern, "output": "json", "fl": "url", "filter": "status:200"}
+    params = {"url": pattern, "output": "json", "fl": "url"}
     if match == "domain":
         params["matchType"] = "domain"
+    r = await _get(c, api, {**params, "showNumPages": "true"})
+    if not r:
+        return None  # index unavailable
     try:
-        r = await c.get(api, params={**params, "showNumPages": "true"})
         pages = min(int(r.json().get("pages", 1)), max_pages)
-    except Exception as e:
-        log.warning("pages %s %s: %s", api, pattern, e)
-        return []
+    except Exception:
+        pages = 1
     urls = []
     for p in range(pages):
-        for attempt in range(3):
-            try:
-                r = await c.get(api, params={**params, "page": p}, timeout=90)
-                if r.status_code == 200:
-                    urls += [json.loads(l)["url"] for l in r.text.splitlines() if l.strip()]
-                    break
-                await asyncio.sleep(5 * (attempt + 1))
-            except Exception:
-                await asyncio.sleep(5 * (attempt + 1))
+        r = await _get(c, api, {**params, "page": p}, timeout=180, tries=4)
+        if r:
+            urls += [json.loads(l)["url"] for l in r.text.splitlines() if l.strip().startswith("{")]
     return urls
+
+
+def slugs_from_urls(urls) -> dict[str, set]:
+    """Company boards referenced by any job link we've seen (used by run.py too)."""
+    out = {k: set() for k in PATTERNS}
+    hosts = {"jobs.ashbyhq.com": "ashby", "boards.greenhouse.io": "greenhouse", "job-boards.greenhouse.io": "greenhouse",
+             "jobs.lever.co": "lever", "apply.workable.com": "workable"}
+    for u in urls:
+        try:
+            h = (urlparse(u).hostname or "").lower()
+        except Exception:
+            continue
+        ats = hosts.get(h) or ("recruitee" if h.endswith(".recruitee.com") else None)
+        if ats:
+            s = slug_of(ats, u)
+            if s:
+                out[ats].add(s)
+    return out
 
 
 async def main(max_pages: int = 40):
     path = DATA / "companies.json"
     companies = json.loads(path.read_text()) if path.exists() else {}
     before = {k: len(v) for k, v in companies.items()}
+    found = {k: set(companies.get(k, [])) for k in PATTERNS}
+
+    # 1. Boards already referenced by jobs we've scraped (always works).
+    jobs_path = DATA / "jobs.json"
+    if jobs_path.exists():
+        for k, v in slugs_from_urls(u for j in json.loads(jobs_path.read_text()) for u in j.get("links", [])).items():
+            found[k] |= v
+
+    # 2. Common Crawl (big, but often overloaded).
+    cc_ok = False
     async with httpx.AsyncClient(headers={"User-Agent": UA}, timeout=60, follow_redirects=True) as c:
-        apis = await crawl_ids(c)
-        for ats, pats in PATTERNS.items():
-            found = set(companies.get(ats, []))
-            for api in apis:
+        for api in await crawl_ids(c):
+            for ats, pats in PATTERNS.items():
                 for pat, match in pats:
-                    for url in await query(c, api, pat, match, max_pages):
+                    urls = await query(c, api, pat, match, max_pages)
+                    if urls is None:
+                        continue
+                    cc_ok = True
+                    for url in urls:
                         s = slug_of(ats, url)
                         if s:
-                            found.add(s)
-            companies[ats] = sorted(found, key=str.lower)
-            log.info("discover %-10s %d -> %d boards", ats, before.get(ats, 0), len(companies[ats]))
+                            found[ats].add(s)
+            if cc_ok and sum(len(v) for v in found.values()) > 2000:
+                break  # one good crawl is plenty
+
+    for ats in PATTERNS:
+        companies[ats] = sorted(found[ats], key=str.lower)
+        log.info("discover %-10s %d -> %d boards", ats, before.get(ats, 0), len(companies[ats]))
     path.write_text(json.dumps(companies, indent=1))
+    if not cc_ok:
+        log.error("Common Crawl index was unavailable for every query; only boards from scraped job links were added. Re-run later.")
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":

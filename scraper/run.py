@@ -55,8 +55,17 @@ async def gather(mode: str, skip_jobspy: bool):
     # Remember boards that had Webflow jobs so the 4-hourly run keeps polling them.
     for k, v in hits.items():
         hot[k] = sorted(set(hot.get(k, [])) | set(v), key=str.lower)
+    # Any ATS board linked from a Webflow job (e.g. a LinkedIn job pointing at Greenhouse)
+    # becomes a known company and a hot board, so coverage grows every run.
+    from .discover import slugs_from_urls
+    everything = ats_jobs + board_jobs + jobspy_jobs
+    linked = slugs_from_urls(u for j in everything for u in j["links"])
+    for k, v in linked.items():
+        hot[k] = sorted(set(hot.get(k, [])) | v, key=str.lower)
+        companies[k] = sorted(set(companies.get(k, [])) | v, key=str.lower)
     save("hot.json", hot)
-    return ats_jobs + board_jobs + jobspy_jobs
+    save("companies.json", companies)
+    return everything
 
 
 def main():

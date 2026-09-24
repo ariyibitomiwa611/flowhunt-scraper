@@ -56,7 +56,8 @@ def _rows_to_jobs(df, source_hint: str) -> list[dict]:
         posted = r.get("date_posted")
         if isinstance(posted, float) and math.isnan(posted):
             posted = None
-        out.append(
+        direct = r.get("job_url_direct") if isinstance(r.get("job_url_direct"), str) else ""
+        job = (
             make_job(
                 title=title,
                 company=company,
@@ -71,6 +72,9 @@ def _rows_to_jobs(df, source_hint: str) -> list[dict]:
                 description=desc,
             )
         )
+        if direct and direct not in job["links"]:
+            job["links"].append(direct)
+        out.append(job)
     return out
 
 
