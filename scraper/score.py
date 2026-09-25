@@ -28,8 +28,8 @@ SENIOR_TOO_HIGH = re.compile(r"\b(staff|principal|director|head of|vp|vice presi
 JUNIOR = re.compile(r"\b(intern|internship|junior|jr\.?|entry|graduate|trainee|werkstudent)\b", re.I)
 
 ANYWHERE = re.compile(r"worldwide|anywhere|global|international|any location|emea|(?<!south )africa", re.I)
-US_ONLY = re.compile(r"\b(us|usa|u\.s\.|united states|americas?|north america|canada|latam|latin america|mexico|brazil|argentina|colombia|[A-Z][a-z]+, [A-Z]{2}\b)", re.I)
-EUROPE = re.compile(r"europe|\beu\b|european union|uk\b|united kingdom|england|london|germany|netherlands|france|spain|ireland|portugal|poland|belgium|austria|serbia|czech|sweden|denmark|italy", re.I)
+US_ONLY = re.compile(r"\b(us|usa|u\.s\.|united states|americas?|north america|canada|latam|latin america|mexico|brazil|argentina|colombia|new york|nyc|san francisco|bay area|boston|austin|seattle|los angeles|chicago|denver|miami|atlanta|palo alto|toronto|vancouver|montreal|[A-Z][a-z]+, [A-Z]{2}\b)", re.I)
+EUROPE = re.compile(r"europe|\beu\b|berlin|paris|amsterdam|madrid|lisbon|dublin|stockholm|barcelona|munich|zurich|romania|european union|uk\b|united kingdom|england|london|germany|netherlands|france|spain|ireland|portugal|poland|belgium|austria|serbia|czech|sweden|denmark|italy", re.I)
 ASIA_ETC = re.compile(r"south africa|india|philippines|pakistan|bangladesh|indonesia|vietnam|singapore|malaysia|australia|new zealand|uae|united arab emirates|dubai|costa rica", re.I)
 
 
