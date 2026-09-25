@@ -1,33 +1,33 @@
 {
- "last_run": "2026-09-24T23:23:59Z",
+ "last_run": "2026-09-25T00:22:12Z",
  "mode": "full",
- "total": 362,
- "new_this_run": 362,
- "seen_this_run": 362,
+ "total": 418,
+ "new_this_run": 56,
+ "seen_this_run": 409,
  "sources": {
-  "linkedin": 243,
-  "himalayas": 71,
-  "indeed": 35,
-  "ashby": 9,
+  "linkedin": 249,
+  "himalayas": 81,
+  "ashby": 37,
+  "indeed": 37,
+  "greenhouse": 15,
   "lever": 4,
   "jobicy": 4,
+  "workable": 3,
   "hackernews": 3,
-  "greenhouse": 2,
-  "workable": 2,
   "recruitee": 1
  },
  "boards": {
-  "ashby": 0,
-  "greenhouse": 0,
-  "lever": 0,
-  "workable": 0,
-  "recruitee": 0
+  "ashby": 2342,
+  "greenhouse": 3133,
+  "lever": 30,
+  "workable": 2420,
+  "recruitee": 2
  },
  "hot_boards": {
-  "ashby": 7,
-  "greenhouse": 3,
+  "ashby": 56,
+  "greenhouse": 20,
   "lever": 3,
-  "workable": 3,
-  "recruitee": 1
+  "workable": 6,
+  "recruitee": 2
  }
 }
