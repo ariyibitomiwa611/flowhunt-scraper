@@ -1,12 +1,12 @@
 {
- "last_run": "2026-10-01T08:45:34Z",
+ "last_run": "2026-10-01T12:49:48Z",
  "mode": "hot",
- "total": 2328,
- "new_this_run": 27,
- "seen_this_run": 377,
+ "total": 2374,
+ "new_this_run": 46,
+ "seen_this_run": 369,
  "sources": {
-  "linkedin": 2086,
-  "indeed": 95,
+  "linkedin": 2130,
+  "indeed": 97,
   "himalayas": 90,
   "ashby": 53,
   "greenhouse": 19,
