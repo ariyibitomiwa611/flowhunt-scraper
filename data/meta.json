@@ -1,13 +1,13 @@
 {
- "last_run": "2026-10-02T04:42:29Z",
+ "last_run": "2026-10-02T08:45:10Z",
  "mode": "hot",
- "total": 2556,
- "new_this_run": 13,
- "seen_this_run": 374,
+ "total": 2636,
+ "new_this_run": 80,
+ "seen_this_run": 471,
  "sources": {
-  "linkedin": 2301,
-  "indeed": 102,
-  "himalayas": 90,
+  "linkedin": 2374,
+  "indeed": 103,
+  "himalayas": 93,
   "ashby": 55,
   "greenhouse": 19,
   "workable": 12,
@@ -15,6 +15,7 @@
   "arbeitnow": 7,
   "lever": 6,
   "jobicy": 6,
+  "naukri": 4,
   "recruitee": 2
  },
  "boards": {
