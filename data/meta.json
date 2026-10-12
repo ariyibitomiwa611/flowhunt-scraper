@@ -1,11 +1,11 @@
 {
- "last_run": "2026-10-12T00:56:35Z",
- "mode": "hot",
- "total": 3933,
- "new_this_run": 38,
- "seen_this_run": 363,
+ "last_run": "2026-10-12T03:09:37Z",
+ "mode": "full",
+ "total": 3948,
+ "new_this_run": 15,
+ "seen_this_run": 390,
  "sources": {
-  "linkedin": 3568,
+  "linkedin": 3583,
   "indeed": 183,
   "himalayas": 105,
   "ashby": 65,
@@ -30,7 +30,7 @@
   "ashby": 76,
   "greenhouse": 28,
   "lever": 5,
-  "workable": 25,
+  "workable": 26,
   "recruitee": 3
  }
 }
