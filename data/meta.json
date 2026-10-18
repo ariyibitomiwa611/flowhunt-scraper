@@ -1,12 +1,12 @@
 {
- "last_run": "2026-10-18T13:01:21Z",
+ "last_run": "2026-10-18T16:55:25Z",
  "mode": "hot",
- "total": 4714,
- "new_this_run": 16,
- "seen_this_run": 371,
+ "total": 4759,
+ "new_this_run": 45,
+ "seen_this_run": 408,
  "sources": {
-  "linkedin": 4265,
-  "indeed": 256,
+  "linkedin": 4309,
+  "indeed": 257,
   "himalayas": 110,
   "ashby": 86,
   "naukri": 27,
