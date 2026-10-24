@@ -1,12 +1,12 @@
 {
- "last_run": "2026-10-24T18:59:34Z",
+ "last_run": "2026-10-24T22:42:41Z",
  "mode": "hot",
- "total": 5448,
- "new_this_run": 42,
- "seen_this_run": 450,
+ "total": 5459,
+ "new_this_run": 11,
+ "seen_this_run": 446,
  "sources": {
-  "linkedin": 4938,
-  "indeed": 309,
+  "linkedin": 4948,
+  "indeed": 310,
   "himalayas": 112,
   "ashby": 93,
   "naukri": 35,
@@ -14,7 +14,7 @@
   "arbeitnow": 23,
   "workable": 20,
   "lever": 19,
-  "jobicy": 14,
+  "jobicy": 15,
   "bayt": 8,
   "hackernews": 7,
   "recruitee": 4
