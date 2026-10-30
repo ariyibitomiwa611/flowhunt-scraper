@@ -1,14 +1,14 @@
 {
- "last_run": "2026-10-29T21:20:52Z",
+ "last_run": "2026-10-30T06:04:59Z",
  "mode": "hot",
- "total": 4844,
- "new_this_run": 8,
- "seen_this_run": 417,
+ "total": 4841,
+ "new_this_run": 63,
+ "seen_this_run": 423,
  "sources": {
-  "linkedin": 4357,
-  "indeed": 305,
-  "himalayas": 105,
-  "ashby": 93,
+  "linkedin": 4353,
+  "indeed": 307,
+  "himalayas": 103,
+  "ashby": 94,
   "naukri": 39,
   "greenhouse": 31,
   "arbeitnow": 22,
@@ -27,7 +27,7 @@
   "recruitee": 1054
  },
  "hot_boards": {
-  "ashby": 94,
+  "ashby": 95,
   "greenhouse": 37,
   "lever": 9,
   "workable": 32,
