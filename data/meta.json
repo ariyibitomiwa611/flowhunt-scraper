@@ -1,16 +1,16 @@
 {
- "last_run": "2026-11-16T06:51:02Z",
- "mode": "hot",
- "total": 4352,
- "new_this_run": 42,
- "seen_this_run": 468,
+ "last_run": "2026-11-16T10:20:38Z",
+ "mode": "full",
+ "total": 4364,
+ "new_this_run": 26,
+ "seen_this_run": 466,
  "sources": {
-  "linkedin": 3870,
-  "indeed": 306,
+  "linkedin": 3885,
+  "indeed": 303,
   "himalayas": 128,
   "ashby": 97,
+  "naukri": 39,
   "greenhouse": 39,
-  "naukri": 37,
   "workable": 28,
   "arbeitnow": 21,
   "lever": 19,
@@ -31,7 +31,7 @@
   "ashby": 105,
   "greenhouse": 45,
   "lever": 9,
-  "workable": 34,
+  "workable": 35,
   "recruitee": 5
  }
 }
